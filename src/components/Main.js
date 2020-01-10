@@ -1,18 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Card from '@material-ui/core/Card';
 import { Provider, createClient, useQuery } from 'urql';
 import { makeStyles } from '@material-ui/core/styles';
-import CardHeader from './CardHeader';
 import CardContent from '@material-ui/core/CardContent';
-import MenuItem from '@material-ui/core/MenuItem';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextField from '@material-ui/core/TextField';
-
-
+import Dropdown from './dropdown';
 
 const useStyles = makeStyles({
   card: {
-    margin: '2%',
+    margin: '1%',
     height: '700px',
   },
   cardContent: {
@@ -23,9 +19,6 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     height: '100px',
     alignItems: 'center',
-  },
-  select: {
-    width: '500px',
   },
   graphContainer: {
     display: 'flex',
@@ -70,9 +63,13 @@ const MainSection = () => {
   const [selectedMetric, updatedSelectedMetric ] = useState('');
   const { fetching, data, error } = result;
 
+  if ( error ) {
+    // Temporary Error Handling
+    console.error( '>>ERROR', error.message );
+  }
+
   return (
     <Card className={classes.card}>
-      <CardHeader title="EOG Assessment" />
       <CardContent className={ classes.cardContent }>
          { !fetching &&  <div>
             <div className={ classes.selectContainer}>
@@ -89,25 +86,3 @@ const MainSection = () => {
     </Card>
   );
 }
-
-  const Dropdown = ({ onChange, data = [], value  }  ) => {
-    
-    const classes = useStyles();
-
-    return (
-      <TextField
-      label="Select"
-      select
-      value={value}
-      margin={ 'dense' }
-      onChange={ e => {
-        const value = e.target.value || '';
-        onChange( value );
-      } }
-      className={ classes.select }
-    >
-       <MenuItem value=""> <em>None</em> </MenuItem>
-       { data.map( (metric ) => <MenuItem value={ metric } key={ metric }>{ metric }</MenuItem> ) }
-    </TextField>
-    );
-  }

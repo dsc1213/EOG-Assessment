@@ -16,7 +16,7 @@ const Dropdown = ({ onChange, data = [], value  }  ) => {
       id="checkboxes-tags-demo"
       options={data}
       disableCloseOnSelect
-      onChange={ (_, value ) => console.log( value )}
+      onChange={ (_, value ) => onChange( value )}
       getOptionLabel={ val => val }
       renderOption={(value, { selected }) => (
         <React.Fragment>

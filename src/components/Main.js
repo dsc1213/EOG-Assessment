@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Dropdown from './dropdown';
+import GraphContainer from './GraphContainer';
 
 const useStyles = makeStyles({
   card: {
@@ -34,7 +35,6 @@ const useStyles = makeStyles({
   }
 });
 
-
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
 });
@@ -59,9 +59,8 @@ const MainSection = () => {
   const [result] = useQuery({
     query,
   });
-
-  const [selectedMetric, updatedSelectedMetric ] = useState('');
   const { fetching, data, error } = result;
+  const [selectedMetrics, updatedSelectedMetrics ] = useState([]);
 
   if ( error ) {
     // Temporary Error Handling
@@ -73,10 +72,10 @@ const MainSection = () => {
       <CardContent className={ classes.cardContent }>
          { !fetching &&  <div>
             <div className={ classes.selectContainer}>
-              <Dropdown onChange={ updatedSelectedMetric } value={ selectedMetric } data={ ( data || {} ).getMetrics } />
+              <Dropdown onChange={ updatedSelectedMetrics } value={ selectedMetrics } data={ ( data || {} ).getMetrics } />
             </div>
             <div className={ classes.graphContainer }>
-              This is Graph Container
+              <GraphContainer metrics={ selectedMetrics } />
             </div>
          </div> }
           { fetching && <div className={ classes.loading }>

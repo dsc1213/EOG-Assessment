@@ -63,8 +63,7 @@ const MainSection = () => {
   const [selectedMetrics, updatedSelectedMetrics ] = useState([]);
 
   if ( error ) {
-    // Temporary Error Handling
-    console.error( '>>ERROR', error.message );
+    return <div> { error.message } </div>
   }
 
   return (

@@ -10,7 +10,7 @@ const defaultColorPallette = {
   flareTemp: '#fcba03',
   oilTemp: '#a5d923',
   tubingPressure: '#d95a23',
-}
+};
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -30,21 +30,18 @@ const query = `
   `;
 
 export default props => {
-
   return (
     <Provider value={client}>
-      <GraphSection {...props}/>
+      <GraphSection {...props} />
     </Provider>
   );
 };
 
 // Getting Data for 1 minute
 const before = Date.now(); // time in ms
-const after  = Date.now() - ( 1000 * 60 ); // 1 minute before time in ms
-
+const after = Date.now() - 1000 * 60; // 1 minute before time in ms
 
 const getTsStringFromEpoch = epoch => {
-  
   const date = new Date(epoch);
   // const year = date.getFullYear();
   // const month = date.getMonth() + 1;
@@ -54,50 +51,46 @@ const getTsStringFromEpoch = epoch => {
   const seconds = date.getSeconds();
 
   return `${hours}:${minutes}:${seconds}`;
-}
+};
 
-const formatData = ( data = [] ) => {
-
+const formatData = (data = []) => {
   const { getMultipleMeasurements: metricsData } = data;
 
   const unitMapping = {}; // used to store metric units mapping
   // format data by epoch
-  const dataMapping = metricsData.reduce( ( acc, current ) => {
+  const dataMapping = metricsData.reduce((acc, current) => {
     const { metric, measurements } = current;
-    measurements.forEach( measurement => {
-      
+    measurements.forEach(measurement => {
       const { at, value, unit } = measurement;
       const ts = getTsStringFromEpoch(at);
-      if( !acc[at] ) {
+      if (!acc[at]) {
         acc[at] = {
           ts,
           [metric]: value,
-        }
-      }
-      else {
+        };
+      } else {
         acc[at][metric] = value;
       }
       unitMapping[metric] = unit;
-    } )
+    });
     return acc;
-  },{} );
+  }, {});
 
-  const result = Object.keys( dataMapping ).map( key => dataMapping[key] );
+  const result = Object.keys(dataMapping).map(key => dataMapping[key]);
 
   return { data: result, units: unitMapping };
 };
 
 const GraphSection = props => {
-
   const { metrics = [] } = props;
 
-  const input = metrics.map( metricName => {
+  const input = metrics.map(metricName => {
     return {
       metricName,
       before,
-      after
+      after,
     };
-  } );
+  });
 
   const [result] = useQuery({
     query,
@@ -108,13 +101,12 @@ const GraphSection = props => {
 
   const { fetching, data, error } = result;
 
-
-  if ( error ) {
-    return <div> { error.message } </div>
+  if (error) {
+    return <div> {error.message} </div>;
   }
- 
-  if ( fetching ) return <CircularProgress size={ 20 }/>;
-  const graphData = formatData( data );
 
-  return <Graph data={ graphData } height={ 500 } width={ 1000 } colorPallette={ defaultColorPallette }/>
-}
+  if (fetching) return <CircularProgress size={20} />;
+  const graphData = formatData(data);
+
+  return <Graph data={graphData} height={500} width={1000} colorPallette={defaultColorPallette} />;
+};

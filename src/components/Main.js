@@ -13,7 +13,7 @@ const useStyles = makeStyles({
     height: '700px',
   },
   cardContent: {
-    height: '600px'
+    height: '600px',
   },
   selectContainer: {
     display: 'flex',
@@ -32,7 +32,7 @@ const useStyles = makeStyles({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });
 
 const client = createClient({
@@ -46,41 +46,45 @@ const query = `
 `;
 
 export default () => {
-
-  return <Provider value={ client }>
-          <MainSection />
-        </Provider>
-}
+  return (
+    <Provider value={client}>
+      <MainSection />
+    </Provider>
+  );
+};
 
 const MainSection = () => {
-  
   const classes = useStyles();
 
   const [result] = useQuery({
     query,
   });
   const { fetching, data, error } = result;
-  const [selectedMetrics, updatedSelectedMetrics ] = useState([]);
+  const [selectedMetrics, updatedSelectedMetrics] = useState([]);
 
-  if ( error ) {
-    return <div> { error.message } </div>
+  if (error) {
+    return <div> {error.message} </div>;
   }
 
   return (
     <Card className={classes.card}>
-      <CardContent className={ classes.cardContent }>
-         { !fetching &&  <div>
-            <div className={ classes.selectContainer}>
-              <Dropdown onChange={ updatedSelectedMetrics } value={ selectedMetrics } data={ ( data || {} ).getMetrics } />
+      <CardContent className={classes.cardContent}>
+        {!fetching && (
+          <div>
+            <div className={classes.selectContainer}>
+              <Dropdown onChange={updatedSelectedMetrics} value={selectedMetrics} data={(data || {}).getMetrics} />
             </div>
-            <div className={ classes.graphContainer }>
-              <GraphContainer metrics={ selectedMetrics } />
+            <div className={classes.graphContainer}>
+              <GraphContainer metrics={selectedMetrics} />
             </div>
-         </div> }
-          { fetching && <div className={ classes.loading }>
-              <CircularProgress size={ 20 }/>
-            </div>}
+          </div>
+        )}
+        {fetching && (
+          <div className={classes.loading}>
+            <CircularProgress size={20} />
+          </div>
+        )}
       </CardContent>
     </Card>
   );
-}
+};

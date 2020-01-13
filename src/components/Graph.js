@@ -11,6 +11,8 @@ const Graph = props => {
 
   const { width, height, margin = defaultMargin, data: { data, units }, xAxisKey = 'ts', colorPallette = {} } = props;
 
+  if( !data || !Array.isArray( data ) || data.length === 0 ) return <React.Fragment />;
+
   return  <LineChart
             width={ width }
             height={ height }

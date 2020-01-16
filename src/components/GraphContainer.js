@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Graph from './Graph';
+import Measurement from './Measurement';
 
 const defaultColorPallette = {
   waterTemp: '#8884d8',
@@ -108,5 +109,8 @@ const GraphSection = props => {
   if (fetching) return <CircularProgress size={20} />;
   const graphData = formatData(data);
 
-  return <Graph data={graphData} height={500} width={1000} colorPallette={defaultColorPallette} />;
+  return <div>
+          <Measurement />
+        <Graph data={graphData} height={500} width={1000} colorPallette={defaultColorPallette} />
+    </div>
 };

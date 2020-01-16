@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   graphContainer: {
     display: 'flex',
     justifyContent: 'center',
-    height: '500px',
+    height: '550px',
     alignItems: 'center',
   },
   loading: {

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
 import Graph from './Graph';
 import Measurement from './Measurement';
 
@@ -12,6 +13,21 @@ const defaultColorPallette = {
   oilTemp: '#a5d923',
   tubingPressure: '#d95a23',
 };
+
+const useStyles = makeStyles({
+  graphContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  mesurement: {
+    height: '90px',
+    marginBottom: '5px',
+  },
+  graph: {
+    height: "405px",
+  }
+
+});
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -83,6 +99,10 @@ const formatData = (data = []) => {
 };
 
 const GraphSection = props => {
+
+  const classes = useStyles();
+
+ 
   const { metrics = [] } = props;
 
   const input = metrics.map(metricName => {
@@ -109,8 +129,12 @@ const GraphSection = props => {
   if (fetching) return <CircularProgress size={20} />;
   const graphData = formatData(data);
 
-  return <div>
-          <Measurement />
-        <Graph data={graphData} height={500} width={1000} colorPallette={defaultColorPallette} />
-    </div>
+  return <div className={classes.graphContainer}>
+        {metrics && metrics.length > 0 && <div className={ classes.measurement}>
+            <Measurement metrics={ metrics }/>
+        </div> }
+        {metrics && metrics.length > 0 && <div className={ classes.graph }>
+        <Graph data={graphData} height={400} width={1000} colorPallette={defaultColorPallette} />
+      </div>}
+      </div>
 };

@@ -2,7 +2,6 @@ import React from 'react';
 import { Provider, createClient, defaultExchanges, subscriptionExchange, useSubscription } from 'urql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-
 const subscriptionClient = new SubscriptionClient( 'ws://react.eogresources.com/graphql', {} );
 
 const client = createClient({
@@ -22,13 +21,14 @@ subscription {
   }
 }`;
 
-const Measurement = () => {
+const Measurement = props => {
 
-  const [result ] = useSubscription({
+  const [result] = useSubscription({
                       query,
                     })
-                  
-    console.log( '>>>>QUERY', result );
+  const { data: { newMeasurement } = {} } = result;  
+  
+  // console.log( '>>>>QUERY', props.metrics, newMeasurement );
 
   return <div> this is measurement </div>
 }

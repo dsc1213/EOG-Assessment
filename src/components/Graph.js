@@ -18,8 +18,6 @@ const Graph = props => {
     colorPallette = {},
   } = props;
 
-  if (!data || !Array.isArray(data) || data.length === 0) return <React.Fragment />;
-
   return (
     <LineChart width={width} height={height} data={data} margin={margin}>
       <CartesianGrid strokeDasharray="3 3" />

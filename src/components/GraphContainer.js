@@ -2,6 +2,9 @@ import React from 'react';
 import { Provider, createClient, useQuery } from 'urql';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+import { useDispatch } from 'react-redux';
+import { actions } from '../reducer/graph-reducer';
+
 import Graph from './Graph';
 import Measurement from './Measurement';
 
@@ -18,10 +21,11 @@ const useStyles = makeStyles({
   graphContainer: {
     display: 'flex',
     flexDirection: 'column',
+    height: '100%',
   },
   mesurement: {
     height: '120px',
-    marginBottom: '5px',
+    margin: '5px',
   },
   graph: {
     height: '400px',
@@ -57,48 +61,10 @@ export default props => {
 const before = Date.now(); // time in ms
 const after = Date.now() - 1000 * 60; // 1 minute before time in ms
 
-const getTsStringFromEpoch = epoch => {
-  const date = new Date(epoch);
-  // const year = date.getFullYear();
-  // const month = date.getMonth() + 1;
-  // const day = date.getDate();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-
-  return `${hours}:${minutes}:${seconds}`;
-};
-
-const formatData = (data = []) => {
-  const { getMultipleMeasurements: metricsData } = data;
-
-  const unitMapping = {}; // used to store metric units mapping
-  // format data by epoch
-  const dataMapping = metricsData.reduce((acc, current) => {
-    const { metric, measurements } = current;
-    measurements.forEach(measurement => {
-      const { at, value, unit } = measurement;
-      const ts = getTsStringFromEpoch(at);
-      if (!acc[at]) {
-        acc[at] = {
-          ts,
-          [metric]: value,
-        };
-      } else {
-        acc[at][metric] = value;
-      }
-      unitMapping[metric] = unit;
-    });
-    return acc;
-  }, {});
-
-  const result = Object.keys(dataMapping).map(key => dataMapping[key]);
-
-  return { data: result, units: unitMapping };
-};
-
 const GraphSection = props => {
+  
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   const { metrics = [] } = props;
 
@@ -124,7 +90,8 @@ const GraphSection = props => {
   }
 
   if (fetching) return <CircularProgress size={20} />;
-  const graphData = formatData(data);
+
+  dispatch( actions.graphDataRecevied( data ) );
 
   return (
     <div className={classes.graphContainer}>
@@ -135,7 +102,7 @@ const GraphSection = props => {
       )}
       {metrics && metrics.length > 0 && (
         <div className={classes.graph}>
-          <Graph data={graphData} height={400} width={1000} colorPallette={defaultColorPallette} />
+          <Graph height={450} width={1000} colorPallette={defaultColorPallette} />
         </div>
       )}
     </div>

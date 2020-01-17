@@ -1,6 +1,8 @@
 import React from 'react';
 import { Provider, createClient, defaultExchanges, subscriptionExchange, useSubscription } from 'urql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { actions } from '../reducer/graph-reducer';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -41,20 +43,41 @@ subscription {
 const mapping = {};
 
 const Measurement = props => {
+
   const classes = useStyles();
 
   const { metrics: selectedMetrics } = props;
   const [result] = useSubscription({
     query,
   });
-  const { data: { newMeasurement: { metric, value } = {} } = {} } = result;
+  const { data: { newMeasurement: { metric, value, at, unit } = {} } = {} } = result;
 
   if (selectedMetrics.indexOf(metric) !== -1) {
     mapping[metric] = value;
   } else {
-    // mapping[metric] = undefined;
     delete mapping[metric];
   }
+
+  // NOTE: unable to update graph Data as it is updating the component continuously
+  // const { data: metricsData = [] } = useSelector( state => state.graph ) || {};
+
+  // const data = metricsData.map( obj => {
+
+  //    const newObj = Object.assign( {}, obj );
+
+  //    const { measurements, metric: currentMetric } = newObj;
+  //    let newData = measurements;
+  //    if ( currentMetric === metric ) {
+  //      newData = newData.shift();
+  //      newData.push( { at, value, unit } );
+  //    }
+  //    newObj.measurements = newData;
+  //    return newObj;
+  // } );
+
+  // const dispatch = useDispatch();
+  // dispatch( actions.graphDataRecevied( data ) );
+  // const storeData = useSelector( state => state );
 
   return (
     <div className={classes.container}>
